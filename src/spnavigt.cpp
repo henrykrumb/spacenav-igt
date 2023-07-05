@@ -1,12 +1,14 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
+#include <cstdio>
+#include <cstdlib>
+#include <csignal>
+#include <cmath>
 
 #include <spnav.h>
 
 #include <igtl/igtlServerSocket.h>
 #include <igtl/igtlTransformMessage.h>
 
+#include "matrix.hpp"
 
 static bool running;
 igtl::Socket::Pointer client_socket;
@@ -14,6 +16,39 @@ igtl::Socket::Pointer client_socket;
 void sig(int s)
 {
     running = false;
+}
+
+QuadMatrix<4> rotmatX(float angle)
+{
+    double a = M_PI * angle / 180.0;
+    float arr[4][4] = {
+        {1.0f, 0.0f, 0.0f, 0.0f},
+        {0.0f, cos(a), -sin(a), 0.0f},
+        {0.0f, sin(a), cos(a), 0.0f},
+        {0.0f, 0.0f, 0.0f, 1.0f}};
+    return QuadMatrix<4>(arr);
+}
+
+QuadMatrix<4> rotmatY(float angle)
+{
+    double a = M_PI * angle / 180.0;
+    float arr[4][4]  = {
+        {cos(a), 0.0f, sin(a), 0.0f},
+        {0.0f, 1.0f, 0.0f, 0.0f},
+        {-sin(a), 0.0f, cos(a), 0.0f},
+        {0.0f, 0.0f, 0.0f, 1.0f}};
+    return QuadMatrix<4>(arr);
+}
+
+QuadMatrix<4> rotmatZ(float angle)
+{
+    double a = M_PI * angle / 180.0;
+    float arr[4][4] = {
+        {cos(a), -sin(a), 0.0f, 0.0f},
+        {sin(a), cos(a), 0.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f, 1.0f}};
+    return QuadMatrix<4>(arr);
 }
 
 int main(void)
@@ -33,13 +68,8 @@ int main(void)
     running = true;
     auto server_socket = igtl::ServerSocket::New();
     int status = server_socket->CreateServer(port);
-    
-    float matrix[4][4] = {
-        {1.0, 0.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0, 0.0},
-        {0.0, 0.0, 1.0, 0.0},
-        {0.0, 0.0, 0.0, 1.0},
-    };
+
+    QuadMatrix<4> T, Rx, Ry, Rz;
 
     if (status < 0)
     {
@@ -60,9 +90,12 @@ int main(void)
             {
                 if (sev.type == SPNAV_EVENT_MOTION)
                 {
-                    matrix[0][3] = (float)-sev.motion.x;
-                    matrix[2][3] = (float)sev.motion.y;
-                    matrix[1][3] = (float)-sev.motion.z;
+                    T.set(0, 3, (float)-sev.motion.x);
+                    T.set(2, 3, (float)sev.motion.y);
+                    T.set(1, 3, (float)-sev.motion.z);
+                    Rx = rotmatX(sev.motion.rx);
+                    Ry = rotmatY(sev.motion.rz);
+                    Rz = rotmatZ(sev.motion.ry);
 
                     printf("got motion event: t(%d, %d, %d) ", sev.motion.x, sev.motion.y, sev.motion.z);
                     printf("r(%d, %d, %d)\n", sev.motion.rx, sev.motion.ry, sev.motion.rz);
@@ -78,11 +111,17 @@ int main(void)
             {
                 auto transform_message = igtl::TransformMessage::New();
                 transform_message->SetDeviceName("SpaceMouse");
-                transform_message->SetMatrix(matrix);
+                float float_matrix[4][4];
+                QuadMatrix<4> transform_matrix = Rx.multiply(Ry).multiply(Rz);
+                transform_matrix.set(0, 3, T.get(0, 3));
+                transform_matrix.set(2, 3, T.get(2, 3));
+                transform_matrix.set(1, 3, T.get(1, 3));
+
+                transform_matrix.toArray(float_matrix);
+                transform_message->SetMatrix(float_matrix);
                 transform_message->Pack();
                 if (!client_socket->Send(transform_message->GetPackPointer(), transform_message->GetPackSize()))
                 {
-                    // ...
                 }
                 dirty = false;
             }
