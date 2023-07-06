@@ -13,11 +13,11 @@ ExternalProject_Add(
     GIT_REPOSITORY https://github.com/FreeSpacenav/libspnav
     GIT_TAG master
     INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/install
-    CONFIGURE_COMMAND chmod o+x ${CMAKE_CURRENT_BINARY_DIR}/spnav && cd ${CMAKE_CURRENT_BINARY_DIR}/spnav && ./configure
+    CONFIGURE_COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/spnav-prefix/src/spnav && ./configure
     BUILD_COMMAND ${CMAKE_COMMAND} -E env
         CC=${CMAKE_C_COMPILER}
-        make -C ${CMAKE_CURRENT_BINARY_DIR}/spnav
-    INSTALL_COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/spnav && make install PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
+        make -C ${CMAKE_CURRENT_BINARY_DIR}/spnav-prefix/src/spnav
+    INSTALL_COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/spnav-prefix/src/spnav && make install PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
 )
 ExternalProject_Get_Property(spnav install_dir)
 add_library(lspnav STATIC IMPORTED)
