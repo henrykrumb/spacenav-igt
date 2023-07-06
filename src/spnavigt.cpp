@@ -5,8 +5,8 @@
 
 #include <spnav.h>
 
-#include <igtl/igtlServerSocket.h>
-#include <igtl/igtlTransformMessage.h>
+#include <igtlServerSocket.h>
+#include <igtlTransformMessage.h>
 
 #include "matrix.hpp"
 
