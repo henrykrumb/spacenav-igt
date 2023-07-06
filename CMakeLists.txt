@@ -13,7 +13,7 @@ ExternalProject_Add(
     GIT_REPOSITORY https://github.com/FreeSpacenav/libspnav
     GIT_TAG master
     INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/install
-    CONFIGURE_COMMAND sh -c "cd ${CMAKE_CURRENT_BINARY_DIR}/spnav && ./configure"
+    CONFIGURE_COMMAND chmod o+x ${CMAKE_CURRENT_BINARY_DIR}/spnav && cd ${CMAKE_CURRENT_BINARY_DIR}/spnav && ./configure
     BUILD_COMMAND ${CMAKE_COMMAND} -E env
         CC=${CMAKE_C_COMPILER}
         make -C ${CMAKE_CURRENT_BINARY_DIR}/spnav
