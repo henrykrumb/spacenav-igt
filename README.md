@@ -22,9 +22,9 @@ transform called "SpaceMouse".
 
 ## TODOs ##
 
-* [ ] CMake build with FetchContent (auto-install OpenIGTLink)
+* [x] CMake build with FetchContent (auto-install OpenIGTLink)
 * [x] Rotations (so far, only translations are supported)
 * [ ] Flexible configuration via JSON
-* [ ] System-wide installation
+* [x] System-wide installation
 * [ ] Use button events somehow
-* [ ] Command line arguments
+* [x] Command line arguments

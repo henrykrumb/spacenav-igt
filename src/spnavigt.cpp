@@ -3,6 +3,11 @@
 #include <csignal>
 #include <cmath>
 
+
+#include <CLI/App.hpp>
+#include <CLI/Formatter.hpp>
+#include <CLI/Config.hpp>
+
 #include <spnav.h>
 
 #include <igtlServerSocket.h>
@@ -23,8 +28,8 @@ QuadMatrix<4> rotmatX(float angle)
     double a = M_PI * angle / 180.0;
     float arr[4][4] = {
         {1.0f, 0.0f, 0.0f, 0.0f},
-        {0.0f, cos(a), -sin(a), 0.0f},
-        {0.0f, sin(a), cos(a), 0.0f},
+        {0.0f, (float)cos(a), (float)-sin(a), 0.0f},
+        {0.0f, (float)sin(a), (float)cos(a), 0.0f},
         {0.0f, 0.0f, 0.0f, 1.0f}};
     return QuadMatrix<4>(arr);
 }
@@ -32,10 +37,10 @@ QuadMatrix<4> rotmatX(float angle)
 QuadMatrix<4> rotmatY(float angle)
 {
     double a = M_PI * angle / 180.0;
-    float arr[4][4]  = {
-        {cos(a), 0.0f, sin(a), 0.0f},
+    float arr[4][4] = {
+        {(float)cos(a), 0.0f, (float)sin(a), 0.0f},
         {0.0f, 1.0f, 0.0f, 0.0f},
-        {-sin(a), 0.0f, cos(a), 0.0f},
+        {(float)-sin(a), 0.0f, (float)cos(a), 0.0f},
         {0.0f, 0.0f, 0.0f, 1.0f}};
     return QuadMatrix<4>(arr);
 }
@@ -44,14 +49,14 @@ QuadMatrix<4> rotmatZ(float angle)
 {
     double a = M_PI * angle / 180.0;
     float arr[4][4] = {
-        {cos(a), -sin(a), 0.0f, 0.0f},
-        {sin(a), cos(a), 0.0f, 0.0f},
+        {(float)cos(a), (float)-sin(a), 0.0f, 0.0f},
+        {(float)sin(a), (float)cos(a), 0.0f, 0.0f},
         {0.0f, 0.0f, 1.0f, 0.0f},
         {0.0f, 0.0f, 0.0f, 1.0f}};
     return QuadMatrix<4>(arr);
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
     spnav_event sev;
 
@@ -63,11 +68,17 @@ int main(void)
         return 1;
     }
 
-    int port = 18945;
+    int port = 18944;
     int timeout = 1000;
     running = true;
     auto server_socket = igtl::ServerSocket::New();
     int status = server_socket->CreateServer(port);
+
+    // parse command line args
+    CLI::App app{"3DConnexion IGTLink Server"};
+    app.add_option("-p,--port", port, "IGTLink server port");
+    app.add_option("-t,--timeout", timeout, "Connection timeout");
+    CLI11_PARSE(app, argc, argv);
 
     QuadMatrix<4> T, Rx, Ry, Rz;
 

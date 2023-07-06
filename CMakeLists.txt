@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.26)
 project(spacenavigt)
 include(FetchContent)
 
@@ -7,6 +8,13 @@ FetchContent_Declare(
     GIT_TAG			d4eaae937b6a28ea2324f90c128800b3ad1cf2b3
 )
 FetchContent_MakeAvailable(OpenIGTLink)
+
+FetchContent_Declare(
+  cli11
+  GIT_REPOSITORY https://github.com/CLIUtils/CLI11
+  GIT_TAG        985a19f3860be0cba87354336f6588494b20111c
+)
+FetchContent_MakeAvailable(cli11)
 
 ExternalProject_Add(
     spnav
@@ -23,13 +31,12 @@ ExternalProject_Get_Property(spnav install_dir)
 add_library(lspnav STATIC IMPORTED)
 set_property(TARGET lspnav PROPERTY IMPORTED_LOCATION ${install_dir}/lib/libspnav.so)
 add_dependencies(lspnav spnav)
-include_directories(${install_dir}/include)
 
 find_package(OpenIGTLink REQUIRED)
 include(${OpenIGTLink_USE_FILE})
 
 find_package(X11 REQUIRED)
-include_directories(${X11_INCLUDE_DIR})
+include_directories(${install_dir}/include ${X11_INCLUDE_DIR} ${cli11_SOURCE_DIR}/include)
 link_directories(${X11_LIBRARIES})
 
 add_executable(spnavigt src/spnavigt.cpp)
