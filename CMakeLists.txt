@@ -8,20 +8,34 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(OpenIGTLink)
 
-FetchContent_Declare(
+ExternalProject_Add(
     spnav
     GIT_REPOSITORY https://github.com/FreeSpacenav/libspnav
     GIT_TAG master
-    CONFIGURE_COMMAND "./configure"
-    BUILD_COMMAND "make"
+    INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/install
+    CONFIGURE_COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/spnav && ./configure
+    BUILD_COMMAND ${CMAKE_COMMAND} -E env
+        CC=${CMAKE_C_COMPILER}
+        make -C ${CMAKE_CURRENT_BINARY_DIR}/spnav
+    INSTALL_COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/spnav && make install PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
 )
-FetchContent_MakeAvailable(spnav)
+ExternalProject_Get_Property(spnav install_dir)
+add_library(lspnav STATIC IMPORTED)
+set_property(TARGET lspnav PROPERTY IMPORTED_LOCATION ${install_dir}/lib/libspnav.so)
+add_dependencies(lspnav spnav)
+include_directories(${install_dir}/include)
 
 find_package(OpenIGTLink REQUIRED)
 include(${OpenIGTLink_USE_FILE})
+
+find_package(X11 REQUIRED)
+include_directories(${X11_INCLUDE_DIR})
+link_directories(${X11_LIBRARIES})
+
 add_executable(spnavigt src/spnavigt.cpp)
-target_link_libraries(spnavigt OpenIGTLink spnav)
+target_link_libraries(spnavigt OpenIGTLink ${X11_LIBRARIES} lspnav)
 set_target_properties(spnavigt PROPERTIES OUTPUT_NAME spnavigt)
+
 
 install(
 	TARGETS spnavigt
