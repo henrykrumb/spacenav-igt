@@ -3,7 +3,6 @@
 #include <csignal>
 #include <cmath>
 
-
 #include <CLI/App.hpp>
 #include <CLI/Formatter.hpp>
 #include <CLI/Config.hpp>
@@ -56,7 +55,7 @@ QuadMatrix<4> rotmatZ(float angle)
     return QuadMatrix<4>(arr);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     spnav_event sev;
 
@@ -101,12 +100,12 @@ int main(int argc, char* argv[])
             {
                 if (sev.type == SPNAV_EVENT_MOTION)
                 {
-                    T.set(0, 3, (float)-sev.motion.x);
-                    T.set(2, 3, (float)sev.motion.y);
-                    T.set(1, 3, (float)-sev.motion.z);
-                    Rx = rotmatX(sev.motion.rx);
-                    Ry = rotmatY(sev.motion.rz);
-                    Rz = rotmatZ(sev.motion.ry);
+                    T.set(0, 3, T.get(0, 3) + (float)-sev.motion.x * 0.01);
+                    T.set(2, 3, T.get(2, 3) + (float)sev.motion.y * 0.01);
+                    T.set(1, 3, T.get(1, 3) + (float)-sev.motion.z * 0.01);
+                    //Rx = rotmatX(sev.motion.rx);
+                    //Ry = rotmatY(sev.motion.rz);
+                    //Rz = rotmatZ(sev.motion.ry);
 
                     printf("got motion event: t(%d, %d, %d) ", sev.motion.x, sev.motion.y, sev.motion.z);
                     printf("r(%d, %d, %d)\n", sev.motion.rx, sev.motion.ry, sev.motion.rz);
@@ -114,6 +113,7 @@ int main(int argc, char* argv[])
                 }
                 else if (sev.type == SPNAV_EVENT_BUTTON)
                 {
+                    T.identity();
                     printf("got button %s event b(%d)\n", sev.button.press ? "press" : "release", sev.button.bnum);
                 }
             }
