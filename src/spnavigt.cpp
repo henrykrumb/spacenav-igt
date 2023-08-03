@@ -91,6 +91,7 @@ int main(int argc, char *argv[])
     float ax = 0.0f, ay = 0.0f, az = 0.0f;
     bool dirty = true;
     float sensitivity = 0.005f;
+    bool lock = true;
     while (running)
     {
         client_socket = server_socket->WaitForConnection(timeout);
@@ -102,16 +103,42 @@ int main(int argc, char *argv[])
             {
                 if (sev.type == SPNAV_EVENT_MOTION)
                 {
-                    T.set(0, 3, T.get(0, 3) - (float)-sev.motion.x * sensitivity);
-                    T.set(2, 3, T.get(2, 3) - (float)sev.motion.y * sensitivity);
-                    T.set(1, 3, T.get(1, 3) - (float)-sev.motion.z * sensitivity);
+                    float dx = (float)-sev.motion.x;
+                    float dy = (float)sev.motion.y;
+                    float dz = (float)-sev.motion.z;
+                    float drx = (float)sev.motion.rx;
+                    float dry = (float)sev.motion.ry;
+                    float drz = (float)sev.motion.rz;
 
-                    ax += sev.motion.rx * sensitivity;
-                    ay -= sev.motion.ry * sensitivity;
-                    az += sev.motion.rz * sensitivity;
+                    if (lock)
+                    {
+                        if (abs(drx) + abs(dry) + abs(drz) > 100)
+                        {
+                            dx = 0.0f;
+                            dy = 0.0f;
+                            dz = 0.0f;
+                        }
+                        if (abs(dx) < abs(dy) || abs(dx) < abs(dz))
+                        {
+                            dx = 0.0f;
+                        }
+                        if (abs(dy) < abs(dx) || abs(dy) < abs(dz))
+                        {
+                            dy = 0.0f;
+                        }
+                        if (abs(dz) < abs(dx) || abs(dz) < abs(dy))
+                        {
+                            dz = 0.0f;
+                        }
+                    }
 
-                    printf("got motion event: t(%d, %d, %d) ", sev.motion.x, sev.motion.y, sev.motion.z);
-                    printf("r(%d, %d, %d)\n", sev.motion.rx, sev.motion.ry, sev.motion.rz);
+                    T.set(0, 3, T.get(0, 3) - dx * sensitivity);
+                    T.set(2, 3, T.get(2, 3) - dy * sensitivity);
+                    T.set(1, 3, T.get(1, 3) - dz * sensitivity);
+
+                    ax += drx * sensitivity;
+                    ay -= dry * sensitivity;
+                    az += drz * sensitivity;
                     dirty = true;
                 }
                 else if (sev.type == SPNAV_EVENT_BUTTON)
@@ -127,7 +154,6 @@ int main(int argc, char *argv[])
                         az = 0;
                     }
                     dirty = true;
-                    printf("got button %s event b(%d)\n", sev.button.press ? "press" : "release", sev.button.bnum);
                 }
             }
 
