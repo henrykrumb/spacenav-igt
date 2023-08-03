@@ -102,12 +102,12 @@ int main(int argc, char *argv[])
             {
                 if (sev.type == SPNAV_EVENT_MOTION)
                 {
-                    T.set(0, 3, T.get(0, 3) + (float)-sev.motion.x * sensitivity);
-                    T.set(2, 3, T.get(2, 3) + (float)sev.motion.y * sensitivity);
-                    T.set(1, 3, T.get(1, 3) + (float)-sev.motion.z * sensitivity);
+                    T.set(0, 3, T.get(0, 3) - (float)-sev.motion.x * sensitivity);
+                    T.set(2, 3, T.get(2, 3) - (float)sev.motion.y * sensitivity);
+                    T.set(1, 3, T.get(1, 3) - (float)-sev.motion.z * sensitivity);
 
                     ax += sev.motion.rx * sensitivity;
-                    ay += sev.motion.ry * sensitivity;
+                    ay -= sev.motion.ry * sensitivity;
                     az += sev.motion.rz * sensitivity;
 
                     printf("got motion event: t(%d, %d, %d) ", sev.motion.x, sev.motion.y, sev.motion.z);
