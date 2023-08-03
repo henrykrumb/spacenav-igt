@@ -12,6 +12,9 @@ First, you'll need to install OpenIGTLink and libspacenav system-wide.
 Once that's done, do:
 
 ```bash
+mkdir build
+cd build
+cmake ..
 make
 ```
 
