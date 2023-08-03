@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <sstream>
+
 template <int N>
 class QuadMatrix
 {
@@ -31,8 +34,9 @@ public:
     bool equals(const QuadMatrix& other) const;
     bool operator==(const QuadMatrix& other) { return equals(other); }
     bool operator!=(const QuadMatrix& other) { return !equals(other); }
-
     // TODO: overload operators
+
+    std::string toString() const;
 
 protected:
     float m_data[N][N];

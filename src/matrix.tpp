@@ -90,7 +90,7 @@ QuadMatrix<N> QuadMatrix<N>::multiply(const QuadMatrix<N> &other)
             result.m_data[i][j] = 0.0f;
             for (int k = 0; k < N; k++)
             {
-                result.m_data[i][j] += m_data[i][j] * other.m_data[j][k];
+                result.m_data[i][j] += m_data[i][k] * other.m_data[k][j];
             }
         }
     }
@@ -146,16 +146,6 @@ float QuadMatrix<2>::determinant()
     return det;
 }
 
-template <>
-float QuadMatrix<3>::determinant()
-{
-    float det = 0.0f;
-    det += m_data[0][0] * m_data[1][1] * m_data[2][2];
-    det += m_data[0][1] * m_data[1][2] * m_data[2][0];
-    det += m_data[0][2] * m_data[1][0] * m_data[2][1];
-    return det;
-}
-
 template <int N>
 QuadMatrix<N - 1> QuadMatrix<N>::minor(const int strike_row, const int strike_column)
 {
@@ -193,12 +183,13 @@ float QuadMatrix<N>::determinant()
     {
         // choose third row, as we're likely to have many zeros in there
         // if we're dealing with homogeneous 4x4 transforms
-        int i = 3;
+        int i = N - 1;
         if (m_data[i][j] == 0)
         {
             continue;
         }
-        int minor_determinant = minor(i, j).determinant();
+        auto m = minor(i, j);
+        float minor_determinant = m.determinant();
         if ((i + j) % 2 != 0)
         {
             minor_determinant = -minor_determinant;
@@ -255,4 +246,20 @@ bool QuadMatrix<N>::equals(const QuadMatrix<N> &other) const
         }
     }
     return true;
+}
+
+template <int N>
+std::string QuadMatrix<N>::toString() const
+{
+    std::stringstream sstr;
+
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            sstr << m_data[i][j] << " ";
+        }
+        sstr << "\n";
+    }
+    return sstr.str();
 }
