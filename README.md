@@ -15,8 +15,7 @@ Tested with:
 
 ## Installation and Usage ##
 
-First, you'll need to install OpenIGTLink and libspacenav system-wide.
-Once that's done, do:
+Run
 
 ```bash
 mkdir build
@@ -26,9 +25,14 @@ make
 ```
 
 and you'll find a spnavigt binary inside this folder.
-Once you run it, you can use SlicerIGT (module SlicerIGTIF) to connect and receive a
-transform called "SpaceMouse".
+The CMakeLists.txt is written as such that dependencies (libspnav and OpenIGTLink) are installed automatically.
+Once you run the binary, you can use SlicerIGT (module SlicerIGTIF) to connect and receive a transform called "SpaceMouse".
 
+To install system-wide, run
+
+```bash
+sudo make install
+```
 
 ## Buttons ##
 
