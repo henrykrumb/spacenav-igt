@@ -3,8 +3,13 @@
 Use your 3DConnexion SpaceMouse with 3D Slicer on Linux.
 This project leverages libspacenav (C) and OpenIGTLink (C++) to make 3DConnexion devices
 usable with OpenIGTLink on Linux systems.
-So far, this is an incomplete proof-of-concept, and it works on my machine (Linux Mint + SpaceMouse wireless).
 
+Tested with:
+* [x] SpaceMouse Wireless
+* [ ] SpaceMouse Compact
+* [ ] SpaceMouse Pro
+* [ ] SpaceMouse Pro Wireless
+* [ ] SpaceMouse Enterprise
 
 ## Installation and Usage ##
 
