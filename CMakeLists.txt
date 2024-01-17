@@ -5,7 +5,7 @@ include(FetchContent)
 FetchContent_Declare(
     OpenIGTLink
     GIT_REPOSITORY	https://github.com/openigtlink/OpenIGTLink
-    GIT_TAG			d4eaae937b6a28ea2324f90c128800b3ad1cf2b3
+    GIT_TAG			c512727425c2b7a594fabb9cd1fbfac512bf376e
 )
 FetchContent_MakeAvailable(OpenIGTLink)
 
