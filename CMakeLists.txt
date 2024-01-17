@@ -41,7 +41,10 @@ link_directories(${X11_LIBRARIES})
 
 add_executable(spnavigt src/utils.cpp src/spnavigt.cpp)
 target_link_libraries(spnavigt OpenIGTLink ${X11_LIBRARIES} lspnav)
-set_target_properties(spnavigt PROPERTIES OUTPUT_NAME spnavigt)
+set_target_properties(spnavigt PROPERTIES
+    OUTPUT_NAME spnavigt
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
 
 
 install(
