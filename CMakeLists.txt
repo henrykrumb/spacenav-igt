@@ -12,7 +12,7 @@ FetchContent_MakeAvailable(OpenIGTLink)
 FetchContent_Declare(
   cli11
   GIT_REPOSITORY https://github.com/CLIUtils/CLI11
-  GIT_TAG        985a19f3860be0cba87354336f6588494b20111c
+  GIT_TAG        20de8b73bbbabaf2f94dd07c4ece8ff3590af531
 )
 FetchContent_MakeAvailable(cli11)
 
