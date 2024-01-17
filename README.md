@@ -11,6 +11,8 @@ Tested with:
 * [ ] SpaceMouse Pro Wireless
 * [ ] SpaceMouse Enterprise
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/henrykrumb/spacenav-igt/cmake.yml)
+
 ## Installation and Usage ##
 
 First, you'll need to install OpenIGTLink and libspacenav system-wide.
