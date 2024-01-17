@@ -13,6 +13,7 @@
 #include <igtlTransformMessage.h>
 
 #include "matrix.hpp"
+#include "utils.hpp"
 
 static bool running;
 igtl::Socket::Pointer client_socket;
@@ -20,39 +21,6 @@ igtl::Socket::Pointer client_socket;
 void sig(int s)
 {
     running = false;
-}
-
-QuadMatrix<4> rotmatX(float angle)
-{
-    double a = M_PI * angle / 180.0;
-    float arr[4][4] = {
-        {1.0f, 0.0f, 0.0f, 0.0f},
-        {0.0f, (float)cos(a), (float)-sin(a), 0.0f},
-        {0.0f, (float)sin(a), (float)cos(a), 0.0f},
-        {0.0f, 0.0f, 0.0f, 1.0f}};
-    return QuadMatrix<4>(arr);
-}
-
-QuadMatrix<4> rotmatY(float angle)
-{
-    double a = M_PI * angle / 180.0;
-    float arr[4][4] = {
-        {(float)cos(a), 0.0f, (float)sin(a), 0.0f},
-        {0.0f, 1.0f, 0.0f, 0.0f},
-        {(float)-sin(a), 0.0f, (float)cos(a), 0.0f},
-        {0.0f, 0.0f, 0.0f, 1.0f}};
-    return QuadMatrix<4>(arr);
-}
-
-QuadMatrix<4> rotmatZ(float angle)
-{
-    double a = M_PI * angle / 180.0;
-    float arr[4][4] = {
-        {(float)cos(a), (float)-sin(a), 0.0f, 0.0f},
-        {(float)sin(a), (float)cos(a), 0.0f, 0.0f},
-        {0.0f, 0.0f, 1.0f, 0.0f},
-        {0.0f, 0.0f, 0.0f, 1.0f}};
-    return QuadMatrix<4>(arr);
 }
 
 int main(int argc, char *argv[])
@@ -63,7 +31,7 @@ int main(int argc, char *argv[])
 
     if (spnav_open() == -1)
     {
-        fprintf(stderr, "failed to connect to spacenavd\n");
+        fprintf(stderr, "Failed to connect to spacenavd\n");
         return 1;
     }
 

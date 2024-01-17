@@ -42,4 +42,11 @@ protected:
     float m_data[N][N];
 };
 
+
+// Additional functions
+QuadMatrix<4> rotmatX(float angle);
+QuadMatrix<4> rotmatY(float angle);
+QuadMatrix<4> rotmatZ(float angle);
+
+
 #include "matrix.tpp"

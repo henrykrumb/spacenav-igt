@@ -39,7 +39,7 @@ find_package(X11 REQUIRED)
 include_directories(${install_dir}/include ${X11_INCLUDE_DIR} ${cli11_SOURCE_DIR}/include)
 link_directories(${X11_LIBRARIES})
 
-add_executable(spnavigt src/spnavigt.cpp)
+add_executable(spnavigt src/utils.cpp src/spnavigt.cpp)
 target_link_libraries(spnavigt OpenIGTLink ${X11_LIBRARIES} lspnav)
 set_target_properties(spnavigt PROPERTIES OUTPUT_NAME spnavigt)
 

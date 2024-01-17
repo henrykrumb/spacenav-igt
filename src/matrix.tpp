@@ -1,3 +1,5 @@
+#include "utils.hpp"
+
 template <int N>
 void QuadMatrix<N>::copy(const QuadMatrix<N> &other)
 {
@@ -262,4 +264,37 @@ std::string QuadMatrix<N>::toString() const
         sstr << "\n";
     }
     return sstr.str();
+}
+
+QuadMatrix<4> rotmatX(float angle)
+{
+    float a = deg2rad(angle);
+    float arr[4][4] = {
+        {1.0f, 0.0f, 0.0f, 0.0f},
+        {0.0f, (float)cos(a), (float)-sin(a), 0.0f},
+        {0.0f, (float)sin(a), (float)cos(a), 0.0f},
+        {0.0f, 0.0f, 0.0f, 1.0f}};
+    return QuadMatrix<4>(arr);
+}
+
+QuadMatrix<4> rotmatY(float angle)
+{
+    float a = deg2rad(angle);
+    float arr[4][4] = {
+        {(float)cos(a), 0.0f, (float)sin(a), 0.0f},
+        {0.0f, 1.0f, 0.0f, 0.0f},
+        {(float)-sin(a), 0.0f, (float)cos(a), 0.0f},
+        {0.0f, 0.0f, 0.0f, 1.0f}};
+    return QuadMatrix<4>(arr);
+}
+
+QuadMatrix<4> rotmatZ(float angle)
+{
+    float a = deg2rad(angle);
+    float arr[4][4] = {
+        {(float)cos(a), (float)-sin(a), 0.0f, 0.0f},
+        {(float)sin(a), (float)cos(a), 0.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f, 1.0f}};
+    return QuadMatrix<4>(arr);
 }
